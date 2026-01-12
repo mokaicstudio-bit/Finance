@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تراكر المصاريف</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <style>
+        :root {
+            --primary: #2d1b4e;
+            --secondary: #3d2860;
+            --accent: #5a3d7a;
+            --highlight: #b794f6;
+            --success: #00d4aa;
+            --text: #f5f5f5;
+            --text-dim: #c4b5e0;
+            --bg: #1a0f2e;
+            --card-bg: rgba(61, 40, 96, 0.6);
+            --border: rgba(183, 148, 246, 0.3);
+            --neon-cyan: #00f5ff;
+            --neon-pink: #ff006e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: linear-gradient(135deg, var(--bg) 0%, #2d1b4e 50%, #3d2860 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(183, 148, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 245, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 50% 20%, rgba(255, 0, 110, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 0.6s ease;
+        }
+
+        .date-display {
+            font-family: 'Almarai', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-family: 'Almarai', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--highlight) 0%, var(--neon-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 40px rgba(183, 148, 246, 0.4);
+        }
+
+        .salary-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease 0.1s both;
+        }
+
+        .salary-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .salary-label {
+            font-size: 1rem;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+
+        .salary-amount {
+            font-family: 'Almarai', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--neon-cyan);
+            direction: ltr;
+        }
+
+        .salary-input {
+            display: none;
+            width: 100%;
+        }
+
+        .salary-input input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.5rem;
+            font-family: 'Almarai', sans-serif;
+            font-weight: 700;
+            background: rgba(15, 52, 96, 0.5);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            color: var(--text);
+            text-align: center;
+            direction: ltr;
+        }
+
+        .salary-input input:focus {
+            outline: none;
+            border-color: var(--highlight);
+            box-shadow: 0 0 20px rgba(183, 148, 246, 0.4);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--highlight) 0%, #9d7bd8 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(183, 148, 246, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(183, 148, 246, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(15, 52, 96, 0.5);
+            color: var(--text);
+            border: 1px solid var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, #00b8d4 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(0, 245, 255, 0.4);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 245, 255, 0.6);
+        }
+
+        .expense-form {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease 0.2s both;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dim);
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-family: 'Cairo', sans-serif;
+            background: rgba(15, 52, 96, 0.5);
+            border: 2px solid var(--accent);
+            border-radius: 12px;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--highlight);
+            box-shadow: 0 0 20px rgba(183, 148, 246, 0.4);
+        }
+
+        select option {
+            background: var(--secondary);
+            color: var(--text);
+            padding: 10px;
+        }
+
+        input[type="number"] {
+            direction: ltr;
+            text-align: right;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+
+        .nav-buttons .btn {
+            flex: 1;
+        }
+
+        .report-section {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease 0.4s both;
+        }
+
+        .month-selector {
+            margin-bottom: 25px;
+        }
+
+        .month-selector select {
+            width: 100%;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+        }
+
+        thead th {
+            background: rgba(183, 148, 246, 0.2);
+            padding: 15px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--highlight);
+            border-bottom: 2px solid var(--highlight);
+        }
+
+        thead th:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        thead th:last-child {
+            border-radius: 0 12px 12px 0;
+        }
+
+        tbody tr {
+            background: rgba(15, 52, 96, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(15, 52, 96, 0.5);
+            transform: translateX(-5px);
+        }
+
+        tbody td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(183, 148, 246, 0.1);
+        }
+
+        tbody tr td:first-child {
+            border-radius: 12px 0 0 12px;
+        }
+
+        tbody tr td:last-child {
+            border-radius: 0 12px 12px 0;
+            direction: ltr;
+            text-align: left;
+        }
+
+        .amount {
+            font-family: 'Almarai', sans-serif;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            direction: ltr;
+            text-align: left;
+        }
+
+        .total-row {
+            background: rgba(183, 148, 246, 0.2) !important;
+            font-weight: 700;
+        }
+
+        .total-row td {
+            color: var(--highlight);
+            font-size: 1.2rem;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-dim);
+        }
+
+        .empty-state svg {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .salary-amount {
+                font-size: 1.8rem;
+            }
+
+            .salary-display {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            thead th, tbody td {
+                padding: 10px;
+            }
+        }
+
+        .success-message {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: linear-gradient(135deg, var(--neon-cyan) 0%, #00b8d4 100%);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            box-shadow: 0 10px 30px rgba(0, 245, 255, 0.4);
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .success-message.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .summary-container {
+            background: rgba(183, 148, 246, 0.1);
+            border: 2px solid var(--highlight);
+            border-radius: 16px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .total-summary {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid rgba(183, 148, 246, 0.3);
+        }
+
+        .total-summary-label {
+            font-size: 1rem;
+            color: var(--text-dim);
+            margin-bottom: 10px;
+        }
+
+        .total-summary-amount {
+            font-family: 'Almarai', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--highlight);
+            direction: ltr;
+        }
+
+        .category-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .category-card {
+            background: rgba(15, 52, 96, 0.3);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--highlight);
+            box-shadow: 0 5px 20px rgba(183, 148, 246, 0.3);
+        }
+
+        .category-name {
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        .category-amount {
+            font-family: 'Almarai', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            direction: ltr;
+        }
+
+        .btn-delete {
+            background: rgba(255, 0, 110, 0.2);
+            border: 1px solid var(--neon-pink);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            margin-left: 5px;
+        }
+
+        .btn-delete:hover {
+            background: var(--neon-pink);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(255, 0, 110, 0.4);
+        }
+
+        .btn-edit {
+            background: rgba(183, 148, 246, 0.2);
+            border: 1px solid var(--highlight);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+            margin-left: 5px;
+        }
+
+        .btn-edit:hover {
+            background: var(--highlight);
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(183, 148, 246, 0.4);
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(26, 15, 46, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .loading-content {
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid rgba(183, 148, 246, 0.3);
+            border-top: 4px solid var(--highlight);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="date-display" id="dateDisplay"></div>
+            <h1>تراكر المصاريف</h1>
+        </header>
+
+        <!-- Main Page -->
+        <div id="mainPage">
+            <div class="salary-section">
+                <div class="salary-display" id="salaryDisplay">
+                    <div>
+                        <div class="salary-label">الراتب الشهري</div>
+                        <div class="salary-amount" id="salaryAmount">26,000 ر.س</div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="toggleSalaryEdit()">تعديل</button>
+                </div>
+                <div class="salary-input" id="salaryInput">
+                    <input type="number" id="newSalary" placeholder="أدخل الراتب الجديد">
+                    <div style="display: flex; gap: 10px; margin-top: 15px;">
+                        <button class="btn btn-success" onclick="saveSalary()">حفظ</button>
+                        <button class="btn btn-secondary" onclick="cancelSalaryEdit()">إلغاء</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="expense-form">
+                <form id="expenseForm">
+                    <div class="form-group">
+                        <label for="category">البند</label>
+                        <select id="category" required>
+                            <option value="">اختر البند</option>
+                            <option value="قرض">قرض</option>
+                            <option value="قسط شهري">قسط شهري</option>
+                            <option value="راتب امي">راتب امي</option>
+                            <option value="بيت">بيت</option>
+                            <option value="صدقة">صدقة</option>
+                            <option value="ومضة">ومضة</option>
+                            <option value="أكل">أكل</option>
+                            <option value="مواصلات">مواصلات</option>
+                            <option value="خندريسو ووناسة">خندريسو ووناسة</option>
+                            <option value="ذهب واستثمار">ذهب واستثمار</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="amount">المبلغ</label>
+                        <input type="number" id="amount" step="0.01" placeholder="0.00" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">إضافة المصروف</button>
+                </form>
+            </div>
+
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showReports()">عرض التقارير</button>
+            </div>
+        </div>
+
+        <!-- Reports Page -->
+        <div id="reportsPage" class="hidden">
+            <div class="nav-buttons">
+                <button class="btn btn-secondary" onclick="showMain()">العودة للرئيسية</button>
+            </div>
+
+            <div class="report-section">
+                <div class="month-selector">
+                    <label for="monthFilter">اختر الشهر</label>
+                    <select id="monthFilter" onchange="filterByMonth()">
+                        <option value="all">جميع الأشهر</option>
+                        <option value="0">يناير</option>
+                        <option value="1">فبراير</option>
+                        <option value="2">مارس</option>
+                        <option value="3">أبريل</option>
+                        <option value="4">مايو</option>
+                        <option value="5">يونيو</option>
+                        <option value="6">يوليو</option>
+                        <option value="7">أغسطس</option>
+                        <option value="8">سبتمبر</option>
+                        <option value="9">أكتوبر</option>
+                        <option value="10">نوفمبر</option>
+                        <option value="11">ديسمبر</option>
+                    </select>
+                </div>
+
+                <div id="summarySection" style="margin-bottom: 30px;">
+                    <!-- Summary will be inserted here -->
+                </div>
+
+                <div id="reportContent">
+                    <!-- Table will be inserted here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-message" id="successMessage">تم إضافة المصروف بنجاح!</div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="spinner"></div>
+            <div style="color: var(--highlight); font-size: 1.2rem; font-weight: 600;">جاري التحميل من Google Sheets...</div>
+        </div>
+    </div>
+
+    <script>
+        // Google Sheets API URL
+        const GOOGLE_SHEET_URL = 'https://script.google.com/macros/s/AKfycbyjJJadB5Icow799FjXYHIwLZ0A_ZKtMMKb9eoCQmIrn_OnjPn9L22Ng7_3rrcP8rgr/exec';
+        
+        // Initialize data from Google Sheets
+        let expenses = [];
+        let salary = 26000;
+        let isLoadingFromSheet = false;
+
+        // Display current date
+        function updateDate() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('ar-SA', options);
+        }
+
+        // Format number with commas
+        function formatNumber(num) {
+            return num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        // Load data from Google Sheets
+        async function loadFromGoogleSheets() {
+            try {
+                isLoadingFromSheet = true;
+                const response = await fetch(GOOGLE_SHEET_URL);
+                const data = await response.json();
+                
+                if (data.success) {
+                    expenses = data.expenses;
+                    console.log('تم تحميل البيانات من Google Sheets:', expenses.length, 'مصروف');
+                }
+            } catch (error) {
+                console.error('خطأ في تحميل البيانات:', error);
+                showSuccessMessage('تعذر تحميل البيانات من Google Sheets');
+            } finally {
+                isLoadingFromSheet = false;
+            }
+        }
+
+        // Load salary from Google Sheets
+        async function loadSalaryFromSheets() {
+            try {
+                const response = await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'getSalary' })
+                });
+                const data = await response.json();
+                
+                if (data.success) {
+                    salary = data.salary;
+                    updateSalaryDisplay();
+                }
+            } catch (error) {
+                console.error('خطأ في تحميل الراتب:', error);
+            }
+        }
+
+        // Add expense to Google Sheets
+        async function addToGoogleSheets(expense) {
+            try {
+                console.log('محاولة إضافة مصروف:', expense);
+                
+                const response = await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'add',
+                        expense: expense
+                    })
+                });
+                
+                console.log('استجابة السيرفر:', response);
+                
+                // With no-cors mode, we can't read the response
+                // So we assume success if no error was thrown
+                return true;
+                
+            } catch (error) {
+                console.error('خطأ في إضافة المصروف:', error);
+                alert('تفاصيل الخطأ: ' + error.message);
+                return false;
+            }
+        }
+
+        // Update expense in Google Sheets
+        async function updateInGoogleSheets(expenseId, newAmount) {
+            try {
+                await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'update',
+                        expenseId: expenseId,
+                        newAmount: newAmount
+                    })
+                });
+                return true;
+            } catch (error) {
+                console.error('خطأ في تعديل المصروف:', error);
+                return false;
+            }
+        }
+
+        // Delete expense from Google Sheets
+        async function deleteFromGoogleSheets(expenseId) {
+            try {
+                await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'delete',
+                        expenseId: expenseId
+                    })
+                });
+                return true;
+            } catch (error) {
+                console.error('خطأ في حذف المصروف:', error);
+                return false;
+            }
+        }
+
+        // Save salary to Google Sheets
+        async function saveSalaryToSheets(newSalary) {
+            try {
+                await fetch(GOOGLE_SHEET_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'setSalary',
+                        salary: newSalary
+                    })
+                });
+                return true;
+            } catch (error) {
+                console.error('خطأ في حفظ الراتب:', error);
+                return false;
+            }
+        }
+
+        // Update salary display
+        function updateSalaryDisplay() {
+            document.getElementById('salaryAmount').textContent = formatNumber(salary) + ' ر.س';
+        }
+
+        // Toggle salary edit mode
+        function toggleSalaryEdit() {
+            document.getElementById('salaryDisplay').style.display = 'none';
+            document.getElementById('salaryInput').style.display = 'block';
+            document.getElementById('newSalary').value = salary;
+            document.getElementById('newSalary').focus();
+        }
+
+        // Cancel salary edit
+        function cancelSalaryEdit() {
+            document.getElementById('salaryDisplay').style.display = 'flex';
+            document.getElementById('salaryInput').style.display = 'none';
+        }
+
+        // Save new salary
+        async function saveSalary() {
+            const newSalary = parseFloat(document.getElementById('newSalary').value);
+            if (newSalary && newSalary > 0) {
+                salary = newSalary;
+                
+                // Save to Google Sheets
+                const success = await saveSalaryToSheets(salary);
+                
+                if (success) {
+                    updateSalaryDisplay();
+                    cancelSalaryEdit();
+                    showSuccessMessage('تم تحديث الراتب بنجاح!');
+                } else {
+                    showSuccessMessage('حدث خطأ في حفظ الراتب');
+                }
+            }
+        }
+
+        // Initialize
+        updateDate();
+        updateSalaryDisplay();
+        
+        // Load data from Google Sheets on page load
+        window.addEventListener('load', async function() {
+            showLoading();
+            try {
+                await loadFromGoogleSheets();
+                await loadSalaryFromSheets();
+            } finally {
+                hideLoading();
+            }
+        });
+        
+        // Show success message
+        function showSuccessMessage(message) {
+            const msgEl = document.getElementById('successMessage');
+            msgEl.textContent = message;
+            msgEl.classList.add('show');
+            setTimeout(() => {
+                msgEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // Show loading overlay
+        function showLoading() {
+            document.getElementById('loadingOverlay').classList.add('show');
+        }
+
+        // Hide loading overlay
+        function hideLoading() {
+            document.getElementById('loadingOverlay').classList.remove('show');
+        }
+
+        // Show reports page
+        function showReports() {
+            document.getElementById('mainPage').classList.add('hidden');
+            document.getElementById('reportsPage').classList.remove('hidden');
+            filterByMonth();
+        }
+
+        // Show main page
+        function showMain() {
+            document.getElementById('mainPage').classList.remove('hidden');
+            document.getElementById('reportsPage').classList.add('hidden');
+        }
+
+        // Filter expenses by month
+        function filterByMonth() {
+            const monthFilter = document.getElementById('monthFilter').value;
+            let filteredExpenses = expenses;
+
+            if (monthFilter !== 'all') {
+                const selectedMonth = parseInt(monthFilter);
+                filteredExpenses = expenses.filter(expense => {
+                    const expenseDate = new Date(expense.date);
+                    return expenseDate.getMonth() === selectedMonth;
+                });
+            }
+
+            displayReport(filteredExpenses);
+        }
+
+        // Display report
+        function displayReport(expensesList) {
+            const reportContent = document.getElementById('reportContent');
+            const summarySection = document.getElementById('summarySection');
+            
+            if (expensesList.length === 0) {
+                summarySection.innerHTML = '';
+                reportContent.innerHTML = `
+                    <div class="empty-state">
+                        <svg fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                        </svg>
+                        <p>لا توجد مصاريف مسجلة</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Calculate total
+            const total = expensesList.reduce((sum, expense) => sum + expense.amount, 0);
+
+            // Calculate per-category totals
+            const categoryTotals = {};
+            expensesList.forEach(expense => {
+                if (!categoryTotals[expense.category]) {
+                    categoryTotals[expense.category] = 0;
+                }
+                categoryTotals[expense.category] += expense.amount;
+            });
+
+            // Create summary section
+            let summaryHTML = `
+                <div class="summary-container">
+                    <div class="total-summary">
+                        <div class="total-summary-label">إجمالي المصاريف الشهرية</div>
+                        <div class="total-summary-amount">${formatNumber(total)} ر.س</div>
+                    </div>
+                    <div class="category-breakdown">
+            `;
+
+            // Sort categories by amount (highest first)
+            const sortedCategories = Object.entries(categoryTotals).sort((a, b) => b[1] - a[1]);
+
+            sortedCategories.forEach(([category, amount]) => {
+                summaryHTML += `
+                    <div class="category-card">
+                        <div class="category-name">${category}</div>
+                        <div class="category-amount">${formatNumber(amount)} ر.س</div>
+                    </div>
+                `;
+            });
+
+            summaryHTML += `
+                    </div>
+                </div>
+            `;
+
+            summarySection.innerHTML = summaryHTML;
+
+            // Create table
+            let tableHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>البند</th>
+                            <th>المبلغ</th>
+                            <th>التاريخ</th>
+                            <th style="width: 120px;">إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            expensesList.forEach(expense => {
+                tableHTML += `
+                    <tr>
+                        <td>${expense.category}</td>
+                        <td class="amount">${formatNumber(expense.amount)} ر.س</td>
+                        <td>${expense.dateString}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-edit" onclick="editExpense(${expense.id})" title="تعديل">
+                                ✏️
+                            </button>
+                            <button class="btn-delete" onclick="deleteExpense(${expense.id})" title="حذف">
+                                🗑️
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            tableHTML += `
+                        <tr class="total-row">
+                            <td>الإجمالي</td>
+                            <td class="amount">${formatNumber(total)} ر.س</td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+
+            reportContent.innerHTML = tableHTML;
+        }
+
+        // Delete expense
+        async function deleteExpense(expenseId) {
+            if (confirm('هل أنت متأكد من حذف هذا المصروف؟')) {
+                // Delete from Google Sheets
+                const success = await deleteFromGoogleSheets(expenseId);
+                
+                if (success) {
+                    // Remove from local array
+                    expenses = expenses.filter(expense => expense.id !== expenseId);
+                    
+                    // Refresh the report
+                    filterByMonth();
+                    
+                    showSuccessMessage('تم حذف المصروف بنجاح!');
+                } else {
+                    showSuccessMessage('حدث خطأ في حذف المصروف');
+                }
+            }
+        }
+
+        // Edit expense
+        async function editExpense(expenseId) {
+            // Find the expense
+            const expense = expenses.find(exp => exp.id === expenseId);
+            
+            if (!expense) return;
+            
+            // Prompt for new amount
+            const newAmountStr = prompt('أدخل المبلغ الجديد:', expense.amount);
+            
+            if (newAmountStr === null) return; // User cancelled
+            
+            const newAmount = parseFloat(newAmountStr);
+            
+            if (isNaN(newAmount) || newAmount <= 0) {
+                alert('المبلغ غير صحيح!');
+                return;
+            }
+            
+            // Update in Google Sheets
+            const success = await updateInGoogleSheets(expenseId, newAmount);
+            
+            if (success) {
+                // Update local expense
+                expense.amount = newAmount;
+                
+                // Refresh the report
+                filterByMonth();
+                
+                showSuccessMessage('تم تعديل المبلغ بنجاح!');
+            } else {
+                showSuccessMessage('حدث خطأ في تعديل المبلغ');
+            }
+        }
+        
+        // Add expense form event listener
+        document.getElementById('expenseForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const category = document.getElementById('category').value;
+            const amount = parseFloat(document.getElementById('amount').value);
+            const date = new Date();
+
+            const expense = {
+                id: Date.now(),
+                category: category,
+                amount: amount,
+                date: date.toISOString(),
+                dateString: date.toLocaleDateString('ar-SA')
+            };
+
+            // Add to Google Sheets
+            const success = await addToGoogleSheets(expense);
+            
+            if (success) {
+                expenses.push(expense);
+
+                // Reset form
+                this.reset();
+
+                showSuccessMessage('تم إضافة المصروف بنجاح!');
+            } else {
+                showSuccessMessage('حدث خطأ في إضافة المصروف');
+            }
+        });
+    </script>
+</body>
+</html>
